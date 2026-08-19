@@ -126,7 +126,10 @@ nav.main a{padding:.5rem .7rem; border-radius:var(--r-pill); font-size:.875rem; 
 nav.main a:hover{background:rgba(41,67,124,0.049)}
 nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .top .acts{display:flex; align-items:center; gap:.5rem; flex:none}
-@media (max-width:1080px){ nav.main{display:none} }
+/* nav.main carries the margin-left:auto that pushes the right-hand controls
+   over. Hiding it on mobile left nothing pushing, so the actions collapsed
+   against the wordmark — the auto margin moves onto .acts instead. */
+@media (max-width:1080px){ nav.main{display:none} .top .acts{margin-left:auto} }
 
 /* Mobile navigation. Below 1080 the inline nav is gone, so this carries it. */
 .menubtn{display:none; width:2.6rem; height:2.6rem; flex:none; align-items:center; justify-content:center;
