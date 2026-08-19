@@ -14,12 +14,14 @@
 :root{
   /* Cream ground kept warm on purpose; the blues are the clinic's own mark,
      sampled from the logo file. Contrast measured, not eyeballed:
-     ink/cream 16.2, navy/cream 12.8, azure-deep/cream 5.7, slate/cream 5.5. */
+     ink/cream 16.2, navy/cream 9.0, azure-deep/cream 4.5, slate/cream 5.5.
+     Blues run 30% softer than the raw logo values; azure, azure-deep and
+     line-strong stop early where AA (4.5) or the 3:1 UI floor would break. */
   --ivory:#FAF7F0; --parchment:#F2ECE0; --card:#FFFCF6; --shell:#F6F1E7;
-  --ink:#101A2E; --navy:#0A286B; --navy-lift:#123A96; --navy-deep:#061A47;
-  --azure:#027DC6; --azure-deep:#0166A3; --azure-soft:#8ED8F5; --cyan:#00B2F1;
+  --ink:#101A2E; --navy:#29437C; --navy-lift:#3354A3; --navy-deep:#25375D;
+  --azure:#3897CF; --azure-deep:#2078AD; --azure-soft:#75B4D4; --cyan:#76D2F1;
   --clay:#A63D26; --slate:#5A6675;
-  --line:#E7DECC; --line-2:#DCD1BB; --line-strong:#7B8697;
+  --line:#E7DECC; --line-2:#DCD1BB; --line-strong:#86909F;
 
   --f-display:'Fraunces','Iowan Old Style',Georgia,serif;
   --f-body:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -43,7 +45,7 @@
   --sh-1:0 1px 2px rgba(16,26,46,.05), 0 1px 1px rgba(16,26,46,.04);
   --sh-2:0 8px 24px -12px rgba(16,26,46,.20), 0 2px 6px -2px rgba(16,26,46,.07);
   --sh-3:0 28px 64px -32px rgba(16,26,46,.32), 0 6px 18px -8px rgba(16,26,46,.10);
-  --sh-azure:0 0 0 1px rgba(2,125,198,.34), 0 14px 40px -20px rgba(2,125,198,.42);
+  --sh-azure:0 0 0 1px rgba(56,151,207,0.238), 0 14px 40px -20px rgba(56,151,207,0.294);
 
   /* The clinic's mark, cropped to its disc so the square backdrop is gone.
      Held once here and referenced everywhere, rather than inlined per use. */
@@ -65,7 +67,7 @@ body::after{
 }
 img{max-width:100%}
 button,input,select,textarea{font:inherit; color:inherit}
-a{color:var(--navy); text-decoration-color:rgba(10,40,107,.3); text-underline-offset:3px}
+a{color:var(--navy); text-decoration-color:rgba(41,67,124,0.21); text-underline-offset:3px}
 a:hover{text-decoration-color:currentColor}
 :focus-visible{outline:2px solid var(--navy); outline-offset:3px; border-radius:3px}
 .tnum{font-variant-numeric:tabular-nums lining-nums}
@@ -121,7 +123,7 @@ header.top{position:sticky; top:0; z-index:40; background:rgba(250,247,240,.82);
 nav.main{display:flex; gap:.15rem; margin-left:auto}
 nav.main a{padding:.5rem .7rem; border-radius:var(--r-pill); font-size:.875rem; font-weight:500;
   color:var(--ink); text-decoration:none; white-space:nowrap; transition:background-color var(--d-hover) var(--e-ui), color var(--d-hover) var(--e-ui)}
-nav.main a:hover{background:rgba(10,40,107,.07)}
+nav.main a:hover{background:rgba(41,67,124,0.049)}
 nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .top .acts{display:flex; align-items:center; gap:.5rem; flex:none}
 @media (max-width:1080px){ nav.main{display:none} }
@@ -144,7 +146,7 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
   transition:transform var(--d-hover) var(--e-lift), box-shadow var(--d-hover) var(--e-lift), border-color var(--d-hover) var(--e-ui)}
 .branchsw>button:hover{transform:translateY(-1px); box-shadow:var(--sh-2); border-color:var(--azure)}
 .branchsw .dot{width:.5rem; height:.5rem; border-radius:50%; background:var(--azure); flex:none;
-  box-shadow:0 0 0 3px rgba(2,125,198,.16)}
+  box-shadow:0 0 0 3px rgba(56,151,207,0.112)}
 .branchsw .lbl{display:flex; flex-direction:column; align-items:flex-start; line-height:1.15}
 .branchsw .lbl b{font-size:.8125rem; font-weight:600}
 .branchsw .lbl i{font-size:.625rem; font-style:normal; letter-spacing:.1em; text-transform:uppercase; color:var(--slate)}
@@ -160,7 +162,7 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .bmenu button:hover{background:var(--parchment)}
 .bmenu button b{display:block; font-size:.9375rem; font-weight:600}
 .bmenu button span{display:block; font-size:.8125rem; color:var(--slate)}
-.bmenu button[aria-checked="true"]{background:rgba(10,40,107,.07)}
+.bmenu button[aria-checked="true"]{background:rgba(41,67,124,0.049)}
 .bmenu button[aria-checked="true"] b::after{content:'  ✓'; color:var(--navy)}
 
 /* ── Buttons ─────────────────────────────────────────────────────────── */
@@ -170,10 +172,10 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
   transition:transform var(--d-hover) var(--e-lift), box-shadow var(--d-hover) var(--e-lift),
              background-color var(--d-hover) var(--e-ui), border-color var(--d-hover) var(--e-ui), color var(--d-hover) var(--e-ui)}
 .btn:disabled{opacity:.42; cursor:not-allowed; transform:none !important; box-shadow:none !important}
-.btn-primary{background:var(--navy); color:var(--card); box-shadow:0 10px 26px -14px rgba(10,40,107,.85)}
-.btn-primary:hover:not(:disabled){background:var(--navy-lift); transform:translateY(-2px); box-shadow:0 18px 36px -16px rgba(10,40,107,.7)}
-.btn-azure{background:var(--azure); color:var(--ink); box-shadow:0 10px 26px -14px rgba(2,125,198,.9)}
-.btn-azure:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 18px 36px -16px rgba(2,125,198,.75)}
+.btn-primary{background:var(--navy); color:var(--card); box-shadow:0 10px 26px -14px rgba(41,67,124,0.595)}
+.btn-primary:hover:not(:disabled){background:var(--navy-lift); transform:translateY(-2px); box-shadow:0 18px 36px -16px rgba(41,67,124,0.49)}
+.btn-azure{background:var(--azure); color:var(--ink); box-shadow:0 10px 26px -14px rgba(56,151,207,0.63)}
+.btn-azure:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 18px 36px -16px rgba(56,151,207,0.525)}
 .btn-ghost{background:var(--card); color:var(--ink); border-color:var(--line-2); box-shadow:var(--sh-1)}
 .btn-ghost:hover:not(:disabled){border-color:var(--navy); color:var(--navy); transform:translateY(-1px); box-shadow:var(--sh-2)}
 .btn-quiet{background:transparent; color:var(--slate); padding:.55rem .85rem; font-weight:500}
@@ -194,8 +196,8 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .chip{display:inline-flex; align-items:center; gap:.4rem; padding:.25rem .65rem; border-radius:var(--r-pill);
   font-size:.75rem; font-weight:600; letter-spacing:.02em; background:var(--parchment); color:var(--slate);
   border:1px solid var(--line-2)}
-.chip-em{background:rgba(10,40,107,.09); color:var(--navy); border-color:rgba(10,40,107,.18)}
-.chip-br{background:rgba(2,125,198,.13); color:var(--azure-deep); border-color:rgba(2,125,198,.3)}
+.chip-em{background:rgba(41,67,124,0.063); color:var(--navy); border-color:rgba(41,67,124,0.126)}
+.chip-br{background:rgba(56,151,207,0.091); color:var(--azure-deep); border-color:rgba(56,151,207,0.21)}
 .chip-cl{background:rgba(166,61,38,.09); color:var(--clay); border-color:rgba(166,61,38,.2)}
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
@@ -206,7 +208,7 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .hero .lede{margin-bottom:1.85rem}
 .hero-side{min-height:clamp(184px,40vw,420px); position:relative}
 .opennow{display:inline-flex; align-items:center; gap:.55rem; font-size:.8125rem; font-weight:600;
-  color:var(--navy); background:rgba(10,40,107,.08); border:1px solid rgba(10,40,107,.16);
+  color:var(--navy); background:rgba(41,67,124,0.056); border:1px solid rgba(41,67,124,0.112);
   padding:.35rem .8rem .35rem .55rem; border-radius:var(--r-pill); margin-bottom:1.3rem}
 .pulse{width:.5rem; height:.5rem; border-radius:50%; background:var(--navy); position:relative; flex:none}
 .pulse::after{content:''; position:absolute; inset:-3px; border-radius:50%; border:1px solid var(--navy);
@@ -280,14 +282,14 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .field .hint{font-size:.75rem; color:var(--slate)}
 .field input,.field select,.field textarea{width:100%; min-height:2.85rem; padding:.6rem .85rem; border-radius:var(--r-sm);
   border:1px solid var(--line-strong); background:var(--card); transition:border-color var(--d-hover) var(--e-ui), box-shadow var(--d-hover) var(--e-ui)}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(10,40,107,.14)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(41,67,124,0.098)}
 .field .err{font-size:.75rem; color:var(--clay); font-weight:600}
 .field[data-bad="1"] input,.field[data-bad="1"] textarea{border-color:var(--clay)}
 .consent{display:flex; gap:.7rem; align-items:flex-start; padding:1rem; background:var(--parchment);
   border:1px solid var(--line-2); border-radius:var(--r-sm)}
 .consent input{width:1.15rem; height:1.15rem; margin-top:.2rem; accent-color:var(--navy); flex:none}
 .hold{display:flex; align-items:center; gap:.5rem; font-size:.8125rem; font-weight:600; color:var(--azure-deep);
-  background:rgba(2,125,198,.11); border:1px solid rgba(2,125,198,.28); border-radius:var(--r-pill); padding:.35rem .8rem}
+  background:rgba(56,151,207,0.077); border:1px solid rgba(56,151,207,0.196); border-radius:var(--r-pill); padding:.35rem .8rem}
 .summary{display:flex; flex-direction:column; gap:0}
 .summary .ln{display:flex; justify-content:space-between; gap:1rem; padding:.7rem 0; border-top:1px dashed var(--line-2); font-size:.875rem}
 .summary .ln:first-of-type{border-top:0}
@@ -299,7 +301,7 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .ticket .tk-top{background:linear-gradient(140deg,var(--navy-deep),var(--navy) 60%,var(--navy-lift));
   color:var(--card); padding:clamp(1.5rem,4vw,2.25rem); position:relative; overflow:hidden}
 .ticket .tk-top::after{content:''; position:absolute; right:-18%; top:-45%; width:62%; aspect-ratio:1; border-radius:50%;
-  background:radial-gradient(circle,rgba(142,216,245,.42),transparent 68%)}
+  background:radial-gradient(circle,rgba(117,180,212,0.294),transparent 68%)}
 .ticket .tok{font-family:var(--f-slip); font-weight:500; font-size:clamp(2.9rem,11vw,4.25rem); line-height:1;
   letter-spacing:.02em; color:var(--azure-soft)}
 .ticket .perf{height:0; border-top:2px dashed var(--line-2); position:relative}
@@ -1192,7 +1194,7 @@ function viewDayCare(){
     <p class="lede">The day-care unit handles minor procedures around the clock at both branches. Most of it needs no appointment — come in, take a token at the desk, and a duty doctor will see you.</p>
   </div></section>
   <section class="band solid" style="padding-top:0"><div class="wrap stack g-4">
-    <div class="card pad-lg row" style="gap:1.25rem; background:linear-gradient(140deg, rgba(10,40,107,.06), rgba(2,125,198,.07)); border-color:var(--azure)">
+    <div class="card pad-lg row" style="gap:1.25rem; background:linear-gradient(140deg, rgba(41,67,124,0.042), rgba(56,151,207,0.049)); border-color:var(--azure)">
       <span class="stack g-1" style="flex:1 1 16rem">
         <b style="font-size:1.05rem">Come straight in for anything bleeding, broken or badly painful.</b>
         <span class="small muted">Do not wait to book. The 24-hour emergency line is answered at both branches.</span>
@@ -1232,8 +1234,8 @@ function viewBranches(){
       return `<div class="card stack tilt" style="overflow:hidden">
         <div style="height:8.5rem; position:relative; background:linear-gradient(150deg,var(--navy-deep),var(--navy) 55%,var(--navy-lift)); overflow:hidden">
           <div style="position:absolute; inset:0; opacity:.5; background:
-            radial-gradient(circle at 24% 70%, rgba(142,216,245,.5), transparent 42%),
-            radial-gradient(circle at 76% 28%, rgba(142,216,245,.32), transparent 46%)"></div>
+            radial-gradient(circle at 24% 70%, rgba(117,180,212,0.35), transparent 42%),
+            radial-gradient(circle at 76% 28%, rgba(117,180,212,0.224), transparent 46%)"></div>
           <div style="position:absolute; left:1.25rem; bottom:1.05rem; color:var(--card)">
             <div style="font-family:var(--f-display); font-variation-settings:'SOFT' 0,'WONK' 0,'opsz' 72; font-size:1.75rem; letter-spacing:-.02em; line-height:1.05">${esc(x.name)}</div>
             <div class="small" style="color:rgba(255,252,246,.82)">${esc(x.area)}</div>
@@ -1389,7 +1391,7 @@ function staffShell(active, body){
     <div class="staff-top">
       <span class="mark mark-xs" aria-hidden="true"></span>
       <span class="wm">Doctor's &amp; Doctor's — Staff console</span>
-      <span class="st-pill st-con" style="color:#8ED8F5">${esc(BRANCHES[S.branch].name)}</span>
+      <span class="st-pill st-con" style="color:var(--azure-soft)">${esc(BRANCHES[S.branch].name)}</span>
       <nav>
         <a href="#/staff"${active==='queue'?' aria-current="page"':''}>Today's queue</a>
         <a href="#/staff/insights"${active==='insights'?' aria-current="page"':''}>Insights</a>
@@ -1475,7 +1477,7 @@ function svgGrouped(days, a, b, w, h){
     <text x="0" y="10" font-size="8" fill="#5A6675">${max}</text>
     <text x="0" y="${(h-30)/2+10}" font-size="8" fill="#5A6675">${Math.round(max/2)}</text>
     ${days.map((d,i)=>{ const x0 = pad + i*bw + bw*.16;
-      return bar(a[i].v, x0, '#0A286B') + bar(b[i].v, x0 + bw*.34, '#027DC6') +
+      return bar(a[i].v, x0, '#29437C') + bar(b[i].v, x0 + bw*.34, '#3897CF') +
         `<text x="${(x0+bw*.32).toFixed(1)}" y="${h-9}" font-size="8" fill="#5A6675" text-anchor="middle">${esc(d.k)}</text>`;}).join('')}
   </svg>`;
 }
@@ -1501,8 +1503,8 @@ function viewInsights(){
         <div style="display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; margin-bottom:.5rem">
           <div class="k">Bookings per day</div>
           <div style="display:flex; gap:.75rem; font-size:.6875rem; color:#5A6675">
-            <span><i style="display:inline-block;width:.55rem;height:.55rem;background:#0A286B;border-radius:1px;margin-right:.3rem"></i>Bachupally</span>
-            <span><i style="display:inline-block;width:.55rem;height:.55rem;background:#027DC6;border-radius:1px;margin-right:.3rem"></i>Madeenaguda</span>
+            <span><i style="display:inline-block;width:.55rem;height:.55rem;background:#29437C;border-radius:1px;margin-right:.3rem"></i>Bachupally</span>
+            <span><i style="display:inline-block;width:.55rem;height:.55rem;background:#3897CF;border-radius:1px;margin-right:.3rem"></i>Madeenaguda</span>
           </div>
         </div>
         ${svgGrouped(days, bach, mad, 320, 140)}
@@ -1513,7 +1515,7 @@ function viewInsights(){
           ${specSplit.map(s=>`<div style="display:grid; grid-template-columns:11rem minmax(0,1fr) 2.5rem; gap:.6rem; align-items:center; font-size:.8125rem">
             <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${esc(s.k)}</span>
             <span style="height:.7rem; background:#EFECE3; border-radius:2px; overflow:hidden">
-              <span style="display:block; height:100%; width:${(s.v/specSplit[0].v*100).toFixed(1)}%; background:linear-gradient(90deg,#0A286B,#027DC6); border-radius:2px"></span></span>
+              <span style="display:block; height:100%; width:${(s.v/specSplit[0].v*100).toFixed(1)}%; background:linear-gradient(90deg,#29437C,#3897CF); border-radius:2px"></span></span>
             <span class="tnum" style="text-align:right; font-weight:600">${s.v}</span></div>`).join('')}
         </div>
       </div>
@@ -1643,10 +1645,10 @@ const Scene = (function(){
 
     /* body — key light upper-left, navy core */
     const g = ctx.createRadialGradient(-rad*.38, -ry*.46, rad*.04, rad*.06, ry*.10, rad*1.14);
-    g.addColorStop(0,   'rgba('+Math.round(104+warmMix*112)+','+Math.round(198+warmMix*28)+','+Math.round(242+warmMix*9)+','+a.toFixed(3)+')');
-    g.addColorStop(.42, 'rgba('+Math.round(22+warmMix*64)+','+Math.round(108+warmMix*48)+','+Math.round(186+warmMix*32)+','+a.toFixed(3)+')');
-    g.addColorStop(.82, 'rgba(10,40,107,'+a.toFixed(3)+')');
-    g.addColorStop(1,   'rgba(6,26,71,'+a.toFixed(3)+')');
+    g.addColorStop(0,   'rgba('+Math.round(123+warmMix*98)+','+Math.round(204+warmMix*24)+','+Math.round(242+warmMix*8)+','+a.toFixed(3)+')');
+    g.addColorStop(.42, 'rgba('+Math.round(51+warmMix*56)+','+Math.round(126+warmMix*42)+','+Math.round(193+warmMix*28)+','+a.toFixed(3)+')');
+    g.addColorStop(.82, 'rgba(41,67,124,'+a.toFixed(3)+')');
+    g.addColorStop(1,   'rgba(37,54,93,'+a.toFixed(3)+')');
     ctx.beginPath(); ctx.ellipse(0,0, rad, ry, 0,0,TAU); ctx.fillStyle=g; ctx.fill();
 
     /* bounce off the cream page, along the lower edge */
@@ -1656,7 +1658,7 @@ const Scene = (function(){
 
     /* cyan wrap — the one signature material note, taken from the logo */
     ctx.beginPath(); ctx.ellipse(0,0, rad*.99, ry*.99, 0, -Math.PI*.16, Math.PI*.62);
-    ctx.strokeStyle = 'rgba(0,178,241,'+(a*(.46 + warm*.42 + n.lit*.32)).toFixed(3)+')';
+    ctx.strokeStyle = 'rgba(32,187,241,'+(a*(.46 + warm*.42 + n.lit*.32)).toFixed(3)+')';
     ctx.lineWidth = Math.max(1, rad*.085); ctx.stroke();
 
     /* specular */

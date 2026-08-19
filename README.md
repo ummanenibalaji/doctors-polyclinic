@@ -29,8 +29,11 @@ cleanly without it. Open it directly or serve it from anything.
 Warm ivory ground with the clinic's own navy and azure, sampled straight from
 the logo file (`#0A286B`, `#027DC6`, `#00B2F1`). Fraunces for display, Plus
 Jakarta Sans for body, IBM Plex Mono for the token and appointment number.
-Contrast is measured rather than eyeballed: ink on ivory 16.2:1, navy on ivory
-12.8:1, azure-deep on ivory 5.7:1, and the worst text-over-canvas case 6.2:1.
+The blues run 30% softer than the raw logo values, so the page reads calm rather
+than corporate. Contrast is measured rather than eyeballed: ink on ivory 16.2:1,
+navy 9.0:1, azure-deep 4.5:1, cream on a navy button 9.0:1. Three of them stop
+short of the full 30% because AA (4.5:1) or the 3:1 UI-component floor would
+break: azure lands at −27%, azure-deep at −21%, line-strong at −12%.
 
 The mark is cropped to its disc so the square backdrop is dropped, stored once
 as a CSS custom property, and used in the header, footer, staff bar and favicon.
