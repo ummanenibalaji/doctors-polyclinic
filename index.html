@@ -372,6 +372,29 @@ footer.foot h5{font-size:.6875rem; letter-spacing:.13em; text-transform:uppercas
 .foot-note{margin-top:2.75rem; padding-top:1.5rem; border-top:1px solid rgba(219,228,242,.16); font-size:.8125rem; color:rgba(219,228,242,.6)}
 
 /* ── Emergency bar (mobile thumb zone) ───────────────────────────────── */
+.mapwrap{position:relative; height:13rem; border:1px solid var(--line); border-radius:var(--r-sm);
+  overflow:hidden; background:var(--parchment)}
+.mapwrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block}
+.mapwrap[data-state="blocked"] iframe{display:none}
+.mapfall{position:absolute; inset:0; display:none; flex-direction:column; align-items:center;
+  justify-content:center; gap:.5rem; text-align:center; padding:1rem; background:var(--parchment)}
+.mapwrap[data-state="blocked"] .mapfall{display:flex}
+
+/* WhatsApp is the number people actually message a clinic on here, so it gets
+   its own affordance in the thumb zone. Brand green on purpose — it is
+   recognised by shape and colour, not by reading it. */
+.wafab{position:fixed; right:clamp(.9rem,3vw,1.5rem); z-index:44; width:3.4rem; height:3.4rem;
+  border-radius:var(--r-pill); display:grid; place-items:center; background:#25D366; color:#fff;
+  box-shadow:0 10px 26px -8px rgba(37,211,102,.55), 0 2px 8px -2px rgba(16,26,46,.3);
+  bottom:clamp(1.25rem,3vw,1.75rem);
+  transition:transform var(--d-hover) var(--e-lift), box-shadow var(--d-hover) var(--e-lift)}
+.wafab:hover{transform:translateY(-2px) scale(1.03); box-shadow:0 16px 34px -10px rgba(37,211,102,.6)}
+.wafab svg{width:1.75rem; height:1.75rem; fill:currentColor}
+body.staff .wafab{display:none}
+@media (max-width:1080px){
+  .wafab{bottom:calc(4.6rem + env(safe-area-inset-bottom) + .7rem); width:3.1rem; height:3.1rem}
+  .wafab svg{width:1.6rem; height:1.6rem}
+}
 .thumbbar{position:fixed; left:0; right:0; bottom:0; z-index:45; display:none; gap:.5rem; padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom));
   background:rgba(250,247,240,.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid var(--line)}
 .thumbbar .btn{flex:1}
@@ -446,17 +469,26 @@ body.staff #scene{display:none}
    DATA — sample roster for the demo build. No live API attached.
    ════════════════════════════════════════════════════════════════════ */
 const BRANCHES = {
-  bachupally: { id:'bachupally', name:'Bachupally', area:'Nizampet Road, Bachupally',
-    addr:'Plot 12, Pragathi Nagar Road, Bachupally, Hyderabad 500090',
-    phone:'040 2000 1188', emergency:'+91 90000 11881',
-    map:'https://www.google.com/maps/search/?api=1&query=Bachupally+Hyderabad',
+  bachupally: { id:'bachupally', name:'Bachupally',
+    short:'Plot 12, Pragathi Nagar Road, Bachupally',
+    addr:'Plot 12, Pragathi Nagar Road, Bachupally, Hyderabad, Telangana 500090',
+    landmark:'Opposite Pragathi Nagar bus stop',
+    q:"Doctor's & Doctor's Polyclinic, Bachupally, Hyderabad",
+    phone:'040 2000 1188', emergency:'+91 90000 11881', whatsapp:'919000011881',
     note:'Emergency and day care run 24 hours. Consultants keep their own OP timings.' },
-  madeenaguda: { id:'madeenaguda', name:'Madeenaguda', area:'Hafeezpet, Miyapur',
-    addr:'Shop 4-6, Madeenaguda Main Road, Hafeezpet, Hyderabad 500049',
-    phone:'040 2000 1199', emergency:'+91 90000 11991',
-    map:'https://www.google.com/maps/search/?api=1&query=Madeenaguda+Hyderabad',
+  madeenaguda: { id:'madeenaguda', name:'Madeenaguda',
+    short:'Shop 4-6, Madeenaguda Main Road, Hafeezpet',
+    addr:'Shop 4-6, Madeenaguda Main Road, Hafeezpet, Hyderabad, Telangana 500049',
+    landmark:'Beside Madeenaguda X Roads',
+    q:"Doctor's & Doctor's Polyclinic, Madeenaguda, Hyderabad",
+    phone:'040 2000 1199', emergency:'+91 90000 11991', whatsapp:'919000011991',
     note:'Emergency and day care run 24 hours. Consultants keep their own OP timings.' }
 };
+Object.values(BRANCHES).forEach(b => {
+  b.map   = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(b.q);
+  b.embed = 'https://maps.google.com/maps?q=' + encodeURIComponent(b.q) + '&z=15&output=embed';
+  b.wa    = 'https://wa.me/' + b.whatsapp + '?text=' + encodeURIComponent('Hello, I would like to ask about an appointment at ' + b.name + '.');
+});
 const BR = Object.values(BRANCHES);
 
 const SPECS = [
@@ -646,7 +678,7 @@ function headerHTML(active){
           </button>
           <div class="bmenu" role="menu">
             ${BR.map(x=>`<button type="button" role="menuitemradio" aria-checked="${x.id===S.branch}" data-branch="${x.id}">
-              <b>${esc(x.name)}</b><span>${esc(x.area)}</span></button>`).join('')}
+              <b>${esc(x.name)}</b><span>${esc(x.short)}</span></button>`).join('')}
           </div>
         </div>
         <a class="btn btn-primary btn-sm" href="#/book/1">Book appointment</a>
@@ -667,7 +699,7 @@ function headerHTML(active){
         <span class="micro">Branch</span>
         <div class="brow" role="group" aria-label="Choose branch">
           ${BR.map(x=>`<button type="button" role="radio" aria-checked="${x.id===S.branch}" data-branch="${x.id}">
-            <b>${esc(x.name)}</b><span>${esc(x.area)}</span></button>`).join('')}
+            <b>${esc(x.name)}</b><span>${esc(x.short)}</span></button>`).join('')}
         </div>
       </div>
       <div class="grp">
@@ -704,6 +736,7 @@ function footerHTML(){
           <h5>Quick links</h5>
           <p class="small"><a href="#/book/1">Book an appointment</a></p>
           <p class="small"><a href="#/portal">My visits</a></p>
+          <p class="small"><a href="${BRANCHES[S.branch].wa}" target="_blank" rel="noopener">WhatsApp ${esc(BRANCHES[S.branch].name)}</a></p>
           <p class="small"><a href="#/diagnostics">Lab tests &amp; prices</a></p>
           <p class="small"><a href="#/day-care">Day care</a></p>
           <p class="small" style="margin-top:.5rem"><a href="#/staff">Staff console</a></p>
@@ -713,6 +746,14 @@ function footerHTML(){
       <span style="display:block; margin-top:.6rem"><button class="btn btn-quiet btn-sm" id="tiertoggle" style="color:rgba(219,228,242,.7); padding-left:0">Motion: <b id="tierlbl">full</b> — tap to change</button></span></p>
     </div>
   </footer>`;
+}
+
+const WA_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.47-2.39-1.48-.89-.79-1.48-1.76-1.66-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.48-.5-.66-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.22 3.07.15.2 2.1 3.2 5.08 4.49.7.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.42-.08-.12-.28-.2-.57-.34M12.05 21.8h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26C2.16 6.45 6.6 2.02 12.05 2.02c2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.43 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0 0 12.05.1C5.5.1.16 5.44.16 12a11.8 11.8 0 0 0 1.59 5.94L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45c6.55 0 11.89-5.34 11.89-11.9a11.82 11.82 0 0 0-3.48-8.4"/></svg>`;
+
+function whatsappHTML(){
+  const b = BRANCHES[S.branch];
+  return `<a class="wafab" href="${b.wa}" target="_blank" rel="noopener"
+    aria-label="Message ${esc(b.name)} on WhatsApp">${WA_ICON}</a>`;
 }
 
 function thumbBarHTML(){
@@ -943,7 +984,7 @@ function viewDoctor(slug){
       <div class="card pad stack g-3">
         <p class="eyebrow">Timings</p>
         ${d.br.map(b=>`<div class="between" style="padding:.35rem 0"><span class="stack g-1">
-          <b>${esc(BRANCHES[b].name)}</b><span class="small muted">${esc(BRANCHES[b].area)}</span></span>
+          <b>${esc(BRANCHES[b].name)}</b><span class="small muted">${esc(BRANCHES[b].short)}</span></span>
           <span class="stack g-1" style="align-items:flex-end">
             <span class="tnum" style="font-weight:600">${esc(d.start)} – ${esc(d.end)}</span>
             <span class="small muted">${d.days.map(x=>DAYNM[x]).join(', ')}</span></span></div>`).join('<hr class="rule">')}
@@ -1029,7 +1070,7 @@ function viewBook(step){
           <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:.75rem">
             ${BR.map(x=>`<button class="pick" type="button" aria-pressed="${x.id===S.branch}" data-setbranch="${x.id}">
               <span class="tick" aria-hidden="true"></span>
-              <span class="stack g-1"><b>${esc(x.name)}</b><span class="small muted">${esc(x.area)}</span></span></button>`).join('')}
+              <span class="stack g-1"><b>${esc(x.name)}</b><span class="small muted">${esc(x.short)}</span></span></button>`).join('')}
           </div>
         </div>
         <div class="stack g-3">
@@ -1328,6 +1369,10 @@ function viewBranches(){
     <p class="eyebrow">Branches</p>
     <h1 class="display" style="font-size:var(--t-h1)">Two clinics, ten minutes apart</h1>
     <p class="lede">Emergency and day care run 24 hours at both. Consultants keep their own OP timings — so check the doctor's page before you travel for a specific speciality.</p>
+    <p class="small" style="display:flex; gap:.6rem; align-items:flex-start; max-width:var(--w-read); padding:.75rem .9rem; background:rgba(2,125,198,.06); border:1px solid rgba(2,125,198,.22); border-radius:var(--r-sm)">
+      <span aria-hidden="true" style="color:var(--azure-deep); font-weight:700">i</span>
+      <span class="muted">Demo build — these addresses and map pins are placeholders. Confirm with the clinic before travelling.</span>
+    </p>
   </div></section>
   <section class="band solid" style="padding-top:0"><div class="wrap grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.25rem">
     ${BR.map(x=>{
@@ -1339,12 +1384,25 @@ function viewBranches(){
             radial-gradient(circle at 76% 28%, rgba(117,180,212,0.224), transparent 46%)"></div>
           <div style="position:absolute; left:1.25rem; bottom:1.05rem; color:var(--card)">
             <div style="font-family:var(--f-display); font-variation-settings:'SOFT' 0,'WONK' 0,'opsz' 72; font-size:1.75rem; letter-spacing:-.02em; line-height:1.05">${esc(x.name)}</div>
-            <div class="small" style="color:rgba(255,252,246,.82)">${esc(x.area)}</div>
+            <div class="small" style="color:rgba(255,252,246,.82)">${esc(x.short)}</div>
           </div>
           ${x.id===S.branch?'<span class="chip chip-br" style="position:absolute; top:1rem; right:1rem; background:rgba(255,252,246,.92)">Your branch</span>':''}
         </div>
         <div class="pad stack g-3">
-          <p class="small muted">${esc(x.addr)}</p>
+          <div class="stack g-1">
+            <span class="micro">Address</span>
+            <p class="small" style="font-weight:500">${esc(x.addr)}</p>
+            <p class="small muted">${esc(x.landmark)}</p>
+          </div>
+          <div class="mapwrap" data-state="loading">
+            <iframe title="Map of ${esc(x.name)}" src="${x.embed}" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="mapfall">
+              <b>Map unavailable here</b>
+              <span class="small muted">Open the location in Google Maps instead.</span>
+              <a class="btn btn-ghost btn-sm" href="${x.map}" target="_blank" rel="noopener">Open in Google Maps</a>
+            </div>
+          </div>
           <hr class="rule">
           <dl class="summary" style="margin:0">
             <div class="ln"><dt>Emergency &amp; day care</dt><dd>24 hours</dd></div>
@@ -1908,7 +1966,7 @@ function render(){
   const swap = () => {
     const keepY = window.scrollY;
     app.innerHTML = v.chrome
-      ? headerHTML(v.active) + '<main id="main">' + v.html + '</main>' + footerHTML() + thumbBarHTML()
+      ? headerHTML(v.active) + '<main id="main">' + v.html + '</main>' + footerHTML() + thumbBarHTML() + whatsappHTML()
       : v.html;
     app.style.opacity = '1';
     if(!firstPaint){
@@ -1969,6 +2027,13 @@ function wire(v){
     tt.addEventListener('click', ()=>{ const order=['A','B','C']; Scene.apply(order[(order.indexOf(Scene.tier)+1)%3]);
       const seg=parseRoute(); const p=poseFor(seg); Scene.setPose(p.pose,p); });
   }
+
+  $$('.mapwrap').forEach(box=>{
+    const f = box.querySelector('iframe'); if(!f) return;
+    let loaded = false;
+    f.addEventListener('load', ()=>{ loaded = true; box.dataset.state = 'ok'; });
+    setTimeout(()=>{ if(!loaded) box.dataset.state = 'blocked'; }, 3000);
+  });
 
   const fs = $('#fs'), fb = $('#fb');
   if(fs && fb){ const upd = ()=>{ const q=new URLSearchParams(); if(fs.value)q.set('s',fs.value); if(fb.value)q.set('b',fb.value);
@@ -2143,7 +2208,7 @@ document.addEventListener('click', e=>{
       <p class="lede" style="margin:0 auto">Booking <span class="slip">${esc(B.ref)}</span> is cancelled and the slot has gone back to the calendar. Nothing is charged.</p>
       <div class="row" style="justify-content:center"><a class="btn btn-primary" href="#/book/1">Book another time</a>
       <a class="btn btn-ghost" href="#/">Back to home</a></div></div></section></main>`
-      + footerHTML() + thumbBarHTML();
+      + footerHTML() + thumbBarHTML() + whatsappHTML();
     wire({chrome:true}); Scene.setPose('cloud',{}); return;
   }
   if(t.id==='copybk'){
