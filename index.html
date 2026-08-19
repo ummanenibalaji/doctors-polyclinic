@@ -239,7 +239,13 @@ body.menu-open{overflow:hidden}
 /* ── Hero ────────────────────────────────────────────────────────────── */
 .hero{position:relative; padding:clamp(3rem,8vw,6.5rem) 0 clamp(2.5rem,6vw,4.5rem)}
 .hero-grid{display:grid; grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr); gap:clamp(1.5rem,4vw,3rem); align-items:center}
-@media (max-width:900px){ .hero-grid{grid-template-columns:minmax(0,1fr)} .hero-side{order:-1} }
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:minmax(0,1fr)}
+  /* The scene is a fixed, full-viewport canvas — it never rendered inside this
+     box. Reserving height for it just pushed the headline off the screen. */
+  .hero-side{display:none}
+  .hero{padding-top:clamp(1.25rem,5vw,2.25rem)}
+}
 .hero h1{margin-bottom:1.15rem}
 .hero .lede{margin-bottom:1.85rem}
 .hero-side{min-height:clamp(184px,40vw,420px); position:relative}
@@ -369,7 +375,7 @@ footer.foot h5{font-size:.6875rem; letter-spacing:.13em; text-transform:uppercas
 .thumbbar{position:fixed; left:0; right:0; bottom:0; z-index:45; display:none; gap:.5rem; padding:.6rem .8rem calc(.6rem + env(safe-area-inset-bottom));
   background:rgba(250,247,240,.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid var(--line)}
 .thumbbar .btn{flex:1}
-@media (max-width:1080px){ .thumbbar{display:flex} body{padding-bottom:4.6rem} }
+@media (max-width:1080px){ .thumbbar{display:flex} body{padding-bottom:calc(4.6rem + env(safe-area-inset-bottom))} }
 
 /* ── Staff console: the carve-out. Flat, dense, instant. ─────────────── */
 body.staff{background:#F4F2EC}
@@ -1890,21 +1896,34 @@ function pickView(seg){
   }
 }
 
-let firstPaint = true;
+let firstPaint = true, lastPath = null, refocus = null;
 function render(){
   const seg = parseRoute();
+  const path = seg.join('/');
+  const routeChanged = path !== lastPath;
   const v = pickView(seg);
 
   document.body.classList.toggle('staff', !v.chrome);
   document.body.classList.remove('menu-open');
   const swap = () => {
+    const keepY = window.scrollY;
     app.innerHTML = v.chrome
       ? headerHTML(v.active) + '<main id="main">' + v.html + '</main>' + footerHTML() + thumbBarHTML()
       : v.html;
     app.style.opacity = '1';
-    if(!firstPaint) window.scrollTo({top:0, behavior:'instant'});
+    if(!firstPaint){
+      /* A new route starts at the top. An in-place update — choosing a
+         speciality, a slot, typing in search — must hold your place, and
+         replacing innerHTML can clamp the scroll, so restore it explicitly. */
+      window.scrollTo({top: routeChanged ? 0 : keepY, behavior:'instant'});
+    }
+    lastPath = path;
     firstPaint = false;
     wire(v);
+    if(refocus){
+      const el = document.querySelector(refocus); refocus = null;
+      if(el) el.focus({preventScroll:true});
+    }
     Scene.hold(!v.chrome);
     if(v.chrome){
       const p = poseFor(seg);
@@ -1912,7 +1931,7 @@ function render(){
     }
   };
 
-  if(firstPaint || matchMedia('(prefers-reduced-motion: reduce)').matches){ swap(); return; }
+  if(firstPaint || !routeChanged || matchMedia('(prefers-reduced-motion: reduce)').matches){ swap(); return; }
   app.style.transition = 'opacity 180ms var(--e-ui)';
   app.style.opacity = '0';
   setTimeout(swap, 150);
@@ -2087,6 +2106,13 @@ document.addEventListener('click', e=>{
   const t = e.target.closest('[data-branch],[data-setbranch],[data-setspec],[data-setdoc],[data-setdate],[data-setslot],[data-goto],[data-quick],[data-set],[data-staffbranch],#next1,#next2,#next3,#copybk,#cancelbk,#signout');
   if(!t) return;
 
+  for(const k of ['setspec','setdoc','setdate','setslot','branch','setbranch','staffbranch']){
+    if(t.dataset[k] !== undefined){
+      const v = window.CSS && CSS.escape ? CSS.escape(t.dataset[k]) : t.dataset[k];
+      refocus = '[data-' + k + '="' + v + '"]';
+      break;
+    }
+  }
   if(t.dataset.branch || t.dataset.setbranch || t.dataset.staffbranch){
     const id = t.dataset.branch || t.dataset.setbranch || t.dataset.staffbranch;
     S.branch = id; store.set('branch', id);
