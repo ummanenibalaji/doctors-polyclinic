@@ -5,6 +5,15 @@ polyclinic in north-west Hyderabad (Bachupally and Madeenaguda / Hafeezpet).
 
 **Live:** https://ummanenibalaji.github.io/doctors-polyclinic/
 
+Also deployable to Vercel with no build step — import this repo at
+[vercel.com/new](https://vercel.com/new), framework preset **Other**, leave the
+build and output settings empty. `vercel.json` handles the rest: every non-file
+path rewrites to `index.html` (the app is hash-routed, so every route is the
+same document), `index.html` revalidates on each request while `assets/` is
+immutable, and a CSP allows only the page's own inline style and script plus
+Google Fonts — no third-party scripts on pages where patients type personal
+details.
+
 ## What's here
 
 `index.html` — the entire site, self-contained. No build step, no bundler, no
