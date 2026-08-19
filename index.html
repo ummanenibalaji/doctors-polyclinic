@@ -33,7 +33,7 @@
   --t-h3:1.1875rem;
   --t-body:1rem; --t-label:.875rem; --t-micro:.75rem;
 
-  --w-page:74rem; --w-read:38rem; --w-slip:29rem;
+  --w-page:74rem; --w-read:38rem; --w-slip:29rem; --head-h:4.5rem;
   --r-sm:6px; --r-md:12px; --r-lg:20px; --r-pill:999px;
 
   --e-arrive:cubic-bezier(.22,.61,.24,1);
@@ -109,7 +109,7 @@ section.band{padding:clamp(3.25rem,7vw,5.5rem) 0}
 header.top{position:sticky; top:0; z-index:40; background:rgba(250,247,240,.82);
   backdrop-filter:saturate(1.5) blur(14px); -webkit-backdrop-filter:saturate(1.5) blur(14px);
   border-bottom:1px solid var(--line)}
-.top .bar{display:flex; align-items:center; gap:1rem; height:4.5rem}
+.top .bar{display:flex; align-items:center; gap:1rem; height:var(--head-h)}
 .brand{display:flex; align-items:center; gap:.7rem; text-decoration:none; color:inherit; flex:none}
 .mark{width:2.35rem; height:2.35rem; flex:none; border-radius:50%; display:block;
   background:#fff var(--logo) center/100% 100% no-repeat;
@@ -127,6 +127,42 @@ nav.main a:hover{background:rgba(41,67,124,0.049)}
 nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
 .top .acts{display:flex; align-items:center; gap:.5rem; flex:none}
 @media (max-width:1080px){ nav.main{display:none} }
+
+/* Mobile navigation. Below 1080 the inline nav is gone, so this carries it. */
+.menubtn{display:none; width:2.6rem; height:2.6rem; flex:none; align-items:center; justify-content:center;
+  background:var(--card); border:1px solid var(--line-2); border-radius:var(--r-pill); cursor:pointer;
+  box-shadow:var(--sh-1); position:relative}
+.menubtn i{display:block; position:absolute; left:50%; width:1.05rem; height:1.5px; margin-left:-.525rem;
+  background:var(--ink); border-radius:2px; transition:transform var(--d-micro) var(--e-ui), opacity var(--d-micro) var(--e-ui)}
+.menubtn i:nth-child(1){transform:translateY(-.28rem)}
+.menubtn i:nth-child(3){transform:translateY(.28rem)}
+.menubtn[aria-expanded="true"] i:nth-child(1){transform:rotate(45deg)}
+.menubtn[aria-expanded="true"] i:nth-child(2){opacity:0}
+.menubtn[aria-expanded="true"] i:nth-child(3){transform:rotate(-45deg)}
+@media (max-width:1080px){ .menubtn{display:inline-flex} }
+
+.msheet{position:fixed; left:0; right:0; top:var(--head-h); bottom:0; z-index:38; background:var(--ivory);
+  overflow-y:auto; -webkit-overflow-scrolling:touch; padding:1.25rem clamp(1.15rem,4vw,2rem) 2.5rem;
+  display:flex; flex-direction:column; gap:1.5rem;
+  opacity:0; visibility:hidden; transform:translateY(-.5rem);
+  transition:opacity var(--d-micro) var(--e-ui), transform var(--d-micro) var(--e-lift), visibility var(--d-micro)}
+.msheet[data-open="1"]{opacity:1; visibility:visible; transform:none}
+body.menu-open{overflow:hidden}
+.msheet nav{display:flex; flex-direction:column}
+.msheet nav a{display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:.95rem .25rem; font-size:1.0625rem; font-weight:600; letter-spacing:-.012em;
+  color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line)}
+.msheet nav a[aria-current="page"]{color:var(--navy)}
+.msheet nav a::after{content:'→'; color:var(--slate); font-weight:400}
+.msheet nav a[aria-current="page"]::after{content:'●'; font-size:.6rem; color:var(--navy)}
+.msheet .grp{display:flex; flex-direction:column; gap:.6rem}
+.msheet .grp>.micro{margin-bottom:.15rem}
+.msheet .brow{display:grid; grid-template-columns:1fr 1fr; gap:.5rem}
+.msheet .brow button{padding:.7rem .75rem; text-align:left; background:var(--card); border:1px solid var(--line-2);
+  border-radius:var(--r-sm); cursor:pointer; line-height:1.25}
+.msheet .brow button b{display:block; font-size:.9375rem; font-weight:600}
+.msheet .brow button span{display:block; font-size:.75rem; color:var(--slate)}
+.msheet .brow button[aria-checked="true"]{border-color:var(--navy); box-shadow:0 0 0 1px var(--navy)}
 /* Below 760 the header cannot hold brand + branch + CTA at once. The thumb bar
    already carries "Book appointment", so the header sheds it rather than scroll. */
 @media (max-width:760px){
@@ -137,7 +173,7 @@ nav.main a[aria-current="page"]{background:var(--navy); color:var(--card)}
   .brand .nm{font-size:1rem}
   .branchsw>button{padding:.4rem .6rem .4rem .5rem}
 }
-@media (max-width:400px){ .branchsw .lbl i{display:none} }
+@media (max-width:400px){ .branchsw{display:none} }
 
 /* branch switcher — a real 3D flip between two faces */
 .branchsw{position:relative; perspective:600px; flex:none}
@@ -362,6 +398,39 @@ body.staff #scene{display:none}
 .stat{background:#fff; border:1px solid #D8D3C7; padding:.85rem 1rem}
 .stat .v{font-size:1.65rem; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1}
 .stat .k{font-size:.6875rem; letter-spacing:.08em; text-transform:uppercase; color:#5A6675}
+.staff-grid{display:grid; grid-template-columns:minmax(0,1fr) 21rem; gap:1rem; align-items:start}
+.split-row{display:grid; grid-template-columns:11rem minmax(0,1fr) 2.5rem; gap:.6rem; align-items:center; font-size:.8125rem}
+.split-row .nm{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+@media (max-width:900px){
+  .staff-grid{grid-template-columns:minmax(0,1fr)}
+  .staff-grid .side{order:-1}
+  .staff-body{padding:.75rem}
+  .staff-top{height:auto; padding:.5rem .75rem; gap:.5rem}
+  .staff-top nav{margin-left:0; width:100%; overflow-x:auto}
+  .split-row{grid-template-columns:minmax(0,1fr) 2.5rem; grid-template-areas:'nm val' 'bar bar'; row-gap:.25rem}
+  .split-row .nm{grid-area:nm} .split-row .val{grid-area:val} .split-row .bar{grid-area:bar}
+}
+/* The 7-column queue is unreadable on a phone, so each row becomes a card.
+   Labels come from data-label rather than a duplicated markup branch. */
+@media (max-width:720px){
+  .qtable{border:0; background:transparent; display:block}
+  .qtable thead{display:none}
+  .qtable tbody,.qtable tr,.qtable td{display:block; width:100%}
+  .qtable tr{background:#fff; border:1px solid #D8D3C7; border-radius:6px; padding:.6rem .75rem; margin-bottom:.5rem}
+  .qtable tr[data-sel="1"]{box-shadow:inset 3px 0 0 var(--navy)}
+  .qtable td{border:0; padding:.2rem 0; display:grid; grid-template-columns:5.25rem minmax(0,1fr);
+    gap:.75rem; align-items:baseline; justify-items:start; text-align:left}
+  .qtable td::before{content:attr(data-label); font-size:.625rem; letter-spacing:.06em; text-transform:uppercase;
+    color:#5A6675; font-weight:600}
+  /* Each button would otherwise be its own grid item and wrap onto a fresh row,
+     so the action cell is a flex row instead and drops its label. */
+  .qtable td[data-label="Action"]{display:flex; flex-wrap:wrap; gap:.4rem; white-space:normal;
+    padding-top:.6rem; margin-top:.4rem; border-top:1px solid #E8E4D9; text-align:left}
+  .qtable td[data-label="Action"]::before{display:none}
+  .qtable td[data-label="Action"] .sbtn{padding:.42rem .8rem; font-size:.8125rem}
+  .qtable td[colspan]{grid-template-columns:1fr; text-align:center}
+  .qtable td[colspan]::before{content:''}
+}
 </style>
 
 <canvas id="scene" aria-hidden="true"></canvas>
@@ -575,9 +644,35 @@ function headerHTML(active){
           </div>
         </div>
         <a class="btn btn-primary btn-sm" href="#/book/1">Book appointment</a>
+        <button class="menubtn" id="menubtn" type="button" aria-expanded="false" aria-controls="msheet" aria-label="Menu">
+          <i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
+        </button>
       </div>
     </div>
-  </header>`;
+  </header>
+  <!-- Outside <header> on purpose: the header sets backdrop-filter, which makes it
+       a containing block for position:fixed children and stops the sheet covering
+       the viewport. -->
+  <div class="msheet" id="msheet" data-open="0">
+      <nav aria-label="Sections">
+        ${NAVLINKS.map(([h,t])=>`<a href="#/${h}"${active===h?' aria-current="page"':''}>${t}</a>`).join('')}
+      </nav>
+      <div class="grp">
+        <span class="micro">Branch</span>
+        <div class="brow" role="group" aria-label="Choose branch">
+          ${BR.map(x=>`<button type="button" role="radio" aria-checked="${x.id===S.branch}" data-branch="${x.id}">
+            <b>${esc(x.name)}</b><span>${esc(x.area)}</span></button>`).join('')}
+        </div>
+      </div>
+      <div class="grp">
+        <a class="btn btn-primary btn-lg" href="#/book/1">Book an appointment</a>
+        <a class="btn btn-ghost" href="tel:${b.emergency.replace(/\s/g,'')}">Emergency, 24 hours · ${esc(b.emergency)}</a>
+      </div>
+      <div class="grp">
+        <span class="micro">For staff</span>
+        <a class="btn btn-ghost btn-sm" href="#/staff" style="align-self:flex-start">Open the staff console</a>
+      </div>
+  </div>`;
 }
 
 function footerHTML(){
@@ -1409,13 +1504,13 @@ function viewStaff(){
   const rows = q.map((r,i)=>{
     const d = DOC_BY[r.doc];
     return `<tr data-row="${i}" data-sel="0">
-      <td class="tok">${esc(r.token)}</td>
-      <td class="tnum">${esc(r.time)}</td>
-      <td><b>${esc(r.name)}</b><br><span style="color:#5A6675; font-size:.75rem" class="tnum">${esc(r.phone)}</span></td>
-      <td>${esc(d.name)}<br><span style="color:#5A6675; font-size:.75rem">${esc(SPEC_BY[d.spec].name)}</span></td>
-      <td style="font-size:.75rem; color:#5A6675">${esc(r.source)}</td>
-      <td><span class="st-pill ${STCLASS[r.status]}">${esc(r.status)}</span></td>
-      <td style="text-align:right; white-space:nowrap">
+      <td class="tok" data-label="Token">${esc(r.token)}</td>
+      <td class="tnum" data-label="Time">${esc(r.time)}</td>
+      <td data-label="Patient"><span><b>${esc(r.name)}</b><br><span style="color:#5A6675; font-size:.75rem" class="tnum">${esc(r.phone)}</span></span></td>
+      <td data-label="Doctor"><span>${esc(d.name)}<br><span style="color:#5A6675; font-size:.75rem">${esc(SPEC_BY[d.spec].name)}</span></span></td>
+      <td style="font-size:.75rem; color:#5A6675" data-label="Source">${esc(r.source)}</td>
+      <td data-label="Status"><span class="st-pill ${STCLASS[r.status]}">${esc(r.status)}</span></td>
+      <td data-label="Action" style="text-align:right; white-space:nowrap">
         ${r.status==='Waiting'?`<button class="sbtn sbtn-p" data-set="${i}|Arrived">Arrived</button>`:''}
         ${r.status==='Arrived'?`<button class="sbtn sbtn-p" data-set="${i}|In consult">Start</button>`:''}
         ${r.status==='In consult'?`<button class="sbtn sbtn-p" data-set="${i}|Done">Done</button>`:''}
@@ -1424,7 +1519,7 @@ function viewStaff(){
       </td></tr>`;}).join('');
 
   return staffShell('queue', `
-    <div style="display:grid; grid-template-columns:minmax(0,1fr) 21rem; gap:1rem; align-items:start">
+    <div class="staff-grid">
       <div style="display:flex; flex-direction:column; gap:.75rem; min-width:0">
         <div style="display:flex; gap:.5rem; align-items:baseline; flex-wrap:wrap">
           <b style="font-size:1.05rem">Today's queue — ${esc(BRANCHES[S.branch].name)}</b>
@@ -1440,7 +1535,7 @@ function viewStaff(){
         <p style="font-size:.75rem; color:#5A6675; margin:0">
           Keyboard: <span class="kbd">↑</span><span class="kbd">↓</span> move · <span class="kbd">A</span> arrived · <span class="kbd">S</span> start · <span class="kbd">D</span> done · <span class="kbd">N</span> no-show · <span class="kbd">W</span> new walk-in</p>
       </div>
-      <div style="display:flex; flex-direction:column; gap:.75rem">
+      <div class="side" style="display:flex; flex-direction:column; gap:.75rem">
         <form id="walkin" style="background:#fff; border:1px solid #D8D3C7; padding:.85rem; display:flex; flex-direction:column; gap:.55rem">
           <b style="font-size:.875rem">New walk-in <span class="kbd" style="float:right">W</span></b>
           <input id="wname" placeholder="Patient name" required style="padding:.4rem .55rem; border:1px solid #C9C3B4; border-radius:4px; font-size:.875rem">
@@ -1512,11 +1607,11 @@ function viewInsights(){
       <div class="stat">
         <div class="k" style="margin-bottom:.65rem">Speciality split — top 7</div>
         <div style="display:flex; flex-direction:column; gap:.4rem">
-          ${specSplit.map(s=>`<div style="display:grid; grid-template-columns:11rem minmax(0,1fr) 2.5rem; gap:.6rem; align-items:center; font-size:.8125rem">
-            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${esc(s.k)}</span>
-            <span style="height:.7rem; background:#EFECE3; border-radius:2px; overflow:hidden">
-              <span style="display:block; height:100%; width:${(s.v/specSplit[0].v*100).toFixed(1)}%; background:linear-gradient(90deg,#29437C,#3897CF); border-radius:2px"></span></span>
-            <span class="tnum" style="text-align:right; font-weight:600">${s.v}</span></div>`).join('')}
+          ${specSplit.map(s=>`<div class="split-row">
+            <span class="nm">${esc(s.k)}</span>
+            <span class="bar" style="height:.7rem; background:#EFECE3; border-radius:2px; overflow:hidden">
+              <span style="display:block; height:100%; width:${(s.v/specSplit[0].v*100).toFixed(1)}%; background:linear-gradient(90deg,var(--navy),var(--azure)); border-radius:2px"></span></span>
+            <span class="val tnum" style="text-align:right; font-weight:600">${s.v}</span></div>`).join('')}
         </div>
       </div>
       <div class="stat">
@@ -1801,6 +1896,7 @@ function render(){
   const v = pickView(seg);
 
   document.body.classList.toggle('staff', !v.chrome);
+  document.body.classList.remove('menu-open');
   const swap = () => {
     app.innerHTML = v.chrome
       ? headerHTML(v.active) + '<main id="main">' + v.html + '</main>' + footerHTML() + thumbBarHTML()
@@ -1832,6 +1928,22 @@ function wire(v){
     bswBtn.addEventListener('click', e=>{ e.stopPropagation();
       const open = bsw.classList.toggle('open'); bswBtn.setAttribute('aria-expanded', String(open)); });
   }
+  const mb = $('#menubtn'), sheet = $('#msheet');
+  if(mb && sheet){
+    const setMenu = open => {
+      sheet.dataset.open = open ? '1' : '0';
+      mb.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('menu-open', open);
+      if(open){ const f = sheet.querySelector('a,button'); if(f) f.focus(); }
+    };
+    mb.addEventListener('click', e=>{ e.stopPropagation(); setMenu(sheet.dataset.open !== '1'); });
+    /* a link to the route you are already on fires no hashchange, so close by hand */
+    sheet.addEventListener('click', e=>{ if(e.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', function esc(ev){
+      if(ev.key === 'Escape' && sheet.dataset.open === '1'){ setMenu(false); mb.focus(); }
+    });
+  }
+
   const tt = $('#tiertoggle');
   if(tt){
     $('#tierlbl').textContent = Scene.tier==='A' ? 'full' : Scene.tier==='B' ? 'reduced' : 'off';
