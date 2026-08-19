@@ -26,10 +26,15 @@ cleanly without it. Open it directly or serve it from anything.
 
 ## Design
 
-Warm ivory ground, deep emerald, brass. Fraunces for display, Plus Jakarta Sans
-for body, IBM Plex Mono for the token and appointment number. Contrast is
-measured rather than eyeballed: ink on ivory 14.8:1, emerald on ivory 8.5:1, and
-the worst text-over-canvas case 5.98:1.
+Warm ivory ground with the clinic's own navy and azure, sampled straight from
+the logo file (`#0A286B`, `#027DC6`, `#00B2F1`). Fraunces for display, Plus
+Jakarta Sans for body, IBM Plex Mono for the token and appointment number.
+Contrast is measured rather than eyeballed: ink on ivory 16.2:1, navy on ivory
+12.8:1, azure-deep on ivory 5.7:1, and the worst text-over-canvas case 6.2:1.
+
+The mark is cropped to its disc so the square backdrop is dropped, stored once
+as a CSS custom property, and used in the header, footer, staff bar and favicon.
+`assets/logo.png` is the same file standalone.
 
 A single persistent canvas sits behind the whole site and re-poses itself per
 route — an orbital cloud on home, an ordered grid on specialities, two clusters
