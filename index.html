@@ -474,17 +474,22 @@ const BRANCHES = {
     addr:'Plot 12, Pragathi Nagar Road, Bachupally, Hyderabad, Telangana 500090',
     landmark:'Opposite Pragathi Nagar bus stop',
     q:"Doctor's & Doctor's Polyclinic, Bachupally, Hyderabad",
-    phone:'040 2000 1188', emergency:'+91 90000 11881', whatsapp:'919000011881',
+    phone:'040 2000 1188', emergency:'+91 90000 11881',
     note:'Emergency and day care run 24 hours. Consultants keep their own OP timings.' },
   madeenaguda: { id:'madeenaguda', name:'Madeenaguda',
     short:'Shop 4-6, Madeenaguda Main Road, Hafeezpet',
     addr:'Shop 4-6, Madeenaguda Main Road, Hafeezpet, Hyderabad, Telangana 500049',
     landmark:'Beside Madeenaguda X Roads',
     q:"Doctor's & Doctor's Polyclinic, Madeenaguda, Hyderabad",
-    phone:'040 2000 1199', emergency:'+91 90000 11991', whatsapp:'919000011991',
+    phone:'040 2000 1199', emergency:'+91 90000 11991',
     note:'Emergency and day care run 24 hours. Consultants keep their own OP timings.' }
 };
+/* One WhatsApp line answers for both clinics, so the prefilled message names
+   the branch the patient is asking about. */
+const WA_NUMBER = '919703099244';
+const WA_DISPLAY = '+91 97030 99244';
 Object.values(BRANCHES).forEach(b => {
+  b.whatsapp = WA_NUMBER;
   b.map   = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(b.q);
   b.embed = 'https://maps.google.com/maps?q=' + encodeURIComponent(b.q) + '&z=15&output=embed';
   b.wa    = 'https://wa.me/' + b.whatsapp + '?text=' + encodeURIComponent('Hello, I would like to ask about an appointment at ' + b.name + '.');
@@ -705,6 +710,7 @@ function headerHTML(active){
       <div class="grp">
         <a class="btn btn-primary btn-lg" href="#/book/1">Book an appointment</a>
         <a class="btn btn-ghost" href="tel:${b.emergency.replace(/\s/g,'')}">Emergency, 24 hours · ${esc(b.emergency)}</a>
+        <a class="btn btn-ghost" href="${b.wa}" target="_blank" rel="noopener">WhatsApp · ${esc(WA_DISPLAY)}</a>
       </div>
       <div class="grp">
         <span class="micro">For staff</span>
@@ -730,13 +736,14 @@ function footerHTML(){
           <p class="small" style="color:rgba(219,228,242,.78); margin-bottom:.65rem">${esc(x.addr)}</p>
           <p class="small tnum"><a href="tel:${x.phone.replace(/\s/g,'')}">${esc(x.phone)}</a></p>
           <p class="small tnum">Emergency <a href="tel:${x.emergency.replace(/\s/g,'')}">${esc(x.emergency)}</a></p>
+          <p class="small tnum">WhatsApp <a href="${x.wa}" target="_blank" rel="noopener">${esc(WA_DISPLAY)}</a></p>
           <p class="small" style="margin-top:.5rem"><a href="${x.map}" target="_blank" rel="noopener">Directions ↗</a></p>
         </div>`).join('')}
         <div>
           <h5>Quick links</h5>
           <p class="small"><a href="#/book/1">Book an appointment</a></p>
           <p class="small"><a href="#/portal">My visits</a></p>
-          <p class="small"><a href="${BRANCHES[S.branch].wa}" target="_blank" rel="noopener">WhatsApp ${esc(BRANCHES[S.branch].name)}</a></p>
+          <p class="small"><a class="tnum" href="${BRANCHES[S.branch].wa}" target="_blank" rel="noopener">WhatsApp ${esc(WA_DISPLAY)}</a></p>
           <p class="small"><a href="#/diagnostics">Lab tests &amp; prices</a></p>
           <p class="small"><a href="#/day-care">Day care</a></p>
           <p class="small" style="margin-top:.5rem"><a href="#/staff">Staff console</a></p>
@@ -1412,6 +1419,7 @@ function viewBranches(){
           </dl>
           <div class="row" style="gap:.5rem">
             <a class="btn btn-primary btn-sm" href="tel:${x.phone.replace(/\s/g,'')}">Call ${esc(x.phone)}</a>
+            <a class="btn btn-ghost btn-sm" href="${x.wa}" target="_blank" rel="noopener">WhatsApp</a>
             <a class="btn btn-ghost btn-sm" href="${x.map}" target="_blank" rel="noopener">Directions ↗</a>
             ${x.id!==S.branch?`<button class="btn btn-quiet btn-sm" data-setbranch="${x.id}">Make this my branch</button>`:''}
           </div>
